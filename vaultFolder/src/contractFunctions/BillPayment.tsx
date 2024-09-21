@@ -11,7 +11,7 @@ const BillPayment = () => {
   console.log(formData);
 
   const { data, error } = useSimulateContract({
-    address: "0x3d1e462b8b6e4A33f27B521b255D967aFCB8b5c2",
+    address: "0xd20d1b5f6864eda6c1ec91b78d3a25428b45943c",
     abi: vaultAbi,
     args: [formData.billId],
     functionName: "payBill",

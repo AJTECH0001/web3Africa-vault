@@ -13,7 +13,7 @@ const AddBill = () => {
   console.log(formData);
 
   const { data, error } = useSimulateContract({
-    address: "0x3d1e462b8b6e4A33f27B521b255D967aFCB8b5c2",
+    address: "0xd20d1b5f6864eda6c1ec91b78d3a25428b45943c",
     abi: vaultAbi,
     args: [
       formData.address,
@@ -67,7 +67,7 @@ const AddBill = () => {
 
           {/* Amount */}
           <div className="mb-4">
-            <label className="block text-gray-700 text-sm font-bold mb-2">Amount (ETH)</label>
+            <label className="block text-gray-700 text-sm font-bold mb-2">Amount (ARB)</label>
             <input
               type="text"
               name="amount"
