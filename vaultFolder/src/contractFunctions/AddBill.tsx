@@ -1,109 +1,84 @@
-import React, { useState } from "react";
-import { useSimulateContract, useWriteContract } from "wagmi";
-import { vaultAbi } from "../vaultAbi";
-import { parseEther } from "viem";
+import React, { useState } from 'react';
+import { useSimulateContract, useWriteContract } from 'wagmi';
+import { vaultAbi } from '../vaultAbi';
+import { formatEther, parseEther } from 'viem'; 
 
-const AddBill = () => {
+export function AddBill() {
   const [formData, setFormData] = useState({
-    amount: "",
-    address: "",
-    lockDuration: "",
+    amount: '',
+    address: '',
+    lockDuration: '',
   });
+
+  
 
   console.log(formData);
 
   const { data, error } = useSimulateContract({
-    address: "0xd20d1b5f6864eda6c1ec91b78d3a25428b45943c",
+    address: '0xd20d1b5f6864eda6c1ec91b78d3a25428b45943c',
     abi: vaultAbi,
-    args: [
-      formData.address,
-      parseEther(formData.amount),
-      formData.lockDuration,
-    ],
-    functionName: "addBill",
+    args: [formData.address, parseEther(formData.amount), formData.lockDuration],
+    functionName: 'addBill',
   });
 
-  console.log("Simulate Contract data:", data);
-  console.log("Simulate Contract error:", error);
+  console.log('Simulate Contract data:', data);
+  console.log('Simulate Contract error:', error);
 
   const { writeContractAsync } = useWriteContract();
 
-  const handleAddBill = async (e: { preventDefault: () => void; }) => {
-    e.preventDefault();
+  const handleAddBill = async () => {
     try {
       if (data && data.request) {
         const response = await writeContractAsync(data.request);
-        console.log("Add Bill response:", response);
+        console.log('Add Bill response:', response);
       } else {
-        console.error("Invalid contract data:", data);
+        console.error('Invalid contract data:', data);
       }
     } catch (error) {
-      console.error("Error adding bill:", error);
+      console.error('Error adding bill:', error);
     }
   };
 
-  const handleInputChange = (e: { target: { name: any; value: any; }; }) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
-
   return (
-    <div className="flex justify-center items-center ">
-      <div className="bg-white p-8 rounded-lg shadow-md w-80">
-        <h2 className="text-2xl font-bold text-gray-700 mb-6">Add Bill</h2>
-        <form onSubmit={handleAddBill} noValidate>
-          {/* Address */}
-          <div className="mb-4">
-            <label className="block text-gray-700 text-sm font-bold mb-2">Address</label>
-            <input
-              type="text"
-              name="address"
-              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring border-gray-300"
-              value={formData.address}
-              onChange={handleInputChange}
-              placeholder="0x123..."
-            />
-          </div>
+    <div className="container mx-auto p-5">
+      <h1 className="text-2xl text-center font-bold mb-4">ADD BILL</h1>
+      <div className="m-5">
+        <input
+          type="text"
+          className="border border-purple-500 rounded-md px-4 py-2 w-full mb-4"
+          placeholder="Address"
+          onChange={(event) => {
+            setFormData((prev) => ({ ...prev, address: event.target.value }));
+          }}
+        />
 
-          {/* Amount */}
-          <div className="mb-4">
-            <label className="block text-gray-700 text-sm font-bold mb-2">Amount (ARB)</label>
-            <input
-              type="text"
-              name="amount"
-              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring border-gray-300"
-              value={formData.amount}
-              onChange={handleInputChange}
-              placeholder="0.1"
-            />
-          </div>
+        <input
+          type="text"
+          className="border border-purple-500 rounded-md px-4 py-2 w-full mb-4"
+          placeholder="Amount"
+          onChange={(event) => {
+            setFormData((prev) => ({ ...prev, amount: event.target.value }));
+          }}
+        />
 
-          {/* Lock Duration */}
-          <div className="mb-4">
-            <label className="block text-gray-700 text-sm font-bold mb-2">Lock Duration (seconds)</label>
-            <input
-              type="text"
-              name="lockDuration"
-              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring border-gray-300"
-              value={formData.lockDuration}
-              onChange={handleInputChange}
-              placeholder="3600"
-            />
-          </div>
-
-          {/* Submit Button */}
-          <div>
-            <button
-              type="submit"
-              className="w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600 transition-colors"
-            >
-              Confirm Transaction
-            </button>
-          </div>
-        </form>
+        <input
+          type="text"
+          className="border border-purple-500 rounded-md px-4 py-2 w-full mb-4"
+          placeholder="LockDuration"
+          onChange={(event) => {
+            setFormData((prev) => ({ ...prev, lockDuration: event.target.value }));
+          }}
+        />
       </div>
+
+      <button
+        className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-md transition duration-300 focus:outline-none focus:ring focus:border-blue-700"
+        onClick={handleAddBill}
+      >
+        Confirm Transaction
+      </button>
     </div>
   );
-};
+}
 
 export default AddBill;

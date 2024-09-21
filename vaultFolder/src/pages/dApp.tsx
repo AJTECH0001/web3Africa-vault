@@ -4,6 +4,10 @@ import Deposit from "@/contractFunctions/Deposit";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import React from "react";
 import Link from "next/link";
+import PayBill from "@/contractFunctions/PayBill";
+import RenounceOwnership from "@/contractFunctions/RenounceOwnership";
+import TransferOwnership from "@/contractFunctions/TransferOwnership";
+import Withdraw from "@/contractFunctions/Withdraw";
 
 const Header = () => {
   return (
@@ -28,6 +32,10 @@ function dApp() {
         <AddBill />
         <BillPayment />
         <Deposit />
+        <PayBill/>
+        <TransferOwnership/>
+        <Withdraw/>
+        <RenounceOwnership/>
       </div>
     </div>
   );

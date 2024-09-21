@@ -1,31 +1,27 @@
-import { vaultAbi } from '../vaultAbi';
 import React, { useState } from 'react';
 import { useSimulateContract, useWriteContract } from 'wagmi';
+import { vaultAbi } from '../vaultAbi';
 
+const contractAddress = '0xd20d1b5f6864eda6c1ec91b78d3a25428b45943c';
 
-
-export function Deposit() {
+export function TransferOwnership() {
 
   const [formData, setFormData] = useState({
-    deposit: '',
+    address: '',
   });
 
-  console.log(formData)
-
-
   const { data, error } = useSimulateContract ({
-    address: '0xd20d1b5f6864eda6c1ec91b78d3a25428b45943c',
+    address: contractAddress,
     abi: vaultAbi,
-    args: [],
-    functionName: 'deposit',
-})
-
+    args: [formData.address],
+    functionName: 'transferOwnership',
+  })
 
 
 
   const { writeContractAsync } = useWriteContract();
 
-  const handleDeposit = async () => {
+  const handleTransferOwnership = async () => {
     try {
       if (data && data.request) {
         const response = await writeContractAsync(data.request);
@@ -38,31 +34,29 @@ export function Deposit() {
     }
   }
 
-
+  
   
 
   
-
-
   return (
     <div className="container mx-auto p-5">
-      <h1 className="text-2xl text-center font-bold mb-4">DEPOSIT</h1>
+      <h1 className="text-2xl text-center font-bold mb-4">TRANSFER OWNERSHIP </h1>
       <input
           type="text"
           className="border border-purple-500 rounded-md px-4 py-2 w-full mb-4"
-          placeholder="Amount"
+          placeholder="Address"
           onChange={(event) => {
             setFormData((prev) => ({ ...prev, deposit: event.target.value }));
           }}
         />
       <button
         className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-md transition duration-300 focus:outline-none focus:ring focus:border-blue-700"
-        onClick={handleDeposit}
+        onClick={handleTransferOwnership}
       >
-        Deposit
+        Transfer Ownership
       </button>
     </div>
   );
 }
 
-export default Deposit;
+export default TransferOwnership;

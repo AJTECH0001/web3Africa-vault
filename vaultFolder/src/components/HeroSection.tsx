@@ -1,4 +1,3 @@
-import illustration from "../assets/Illustration.svg";
 import Link from "next/link";
 const HeroSection = () => {
   return (
