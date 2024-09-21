@@ -1,84 +1,82 @@
-import React, { useState } from 'react';
-import { useSimulateContract, useWriteContract } from 'wagmi';
-import { vaultAbi } from '../vaultAbi';
-import { formatEther, parseEther } from 'viem'; 
+import React, { useState } from 'react';  
+import { useSimulateContract, useWriteContract } from 'wagmi';  
+import { vaultAbi } from '../vaultAbi';  
+import { parseEther } from 'viem';   
 
-export function AddBill() {
-  const [formData, setFormData] = useState({
-    amount: '',
-    address: '',
-    lockDuration: '',
-  });
+export function AddBill() {  
+  const [formData, setFormData] = useState({  
+    amount: '',  
+    address: '',  
+    lockDuration: '',  
+  });  
 
-  
+  console.log(formData);  
 
-  console.log(formData);
+  const { data, error } = useSimulateContract({  
+    address: '0xd20d1b5f6864eda6c1ec91b78d3a25428b45943c',  
+    abi: vaultAbi,  
+    args: [formData.address, parseEther(formData.amount), formData.lockDuration],  
+    functionName: 'addBill',  
+  });  
 
-  const { data, error } = useSimulateContract({
-    address: '0xd20d1b5f6864eda6c1ec91b78d3a25428b45943c',
-    abi: vaultAbi,
-    args: [formData.address, parseEther(formData.amount), formData.lockDuration],
-    functionName: 'addBill',
-  });
+  console.log('Simulate Contract data:', data);  
+  console.log('Simulate Contract error:', error);  
 
-  console.log('Simulate Contract data:', data);
-  console.log('Simulate Contract error:', error);
+  const { writeContractAsync } = useWriteContract();  
 
-  const { writeContractAsync } = useWriteContract();
+  const handleAddBill = async () => {  
+    try {  
+      if (data && data.request) {  
+        const response = await writeContractAsync(data.request);  
+        console.log('Add Bill response:', response);  
+      } else {  
+        console.error('Invalid contract data:', data);  
+      }  
+    } catch (error) {  
+      console.error('Error adding bill:', error);  
+    }  
+  };  
 
-  const handleAddBill = async () => {
-    try {
-      if (data && data.request) {
-        const response = await writeContractAsync(data.request);
-        console.log('Add Bill response:', response);
-      } else {
-        console.error('Invalid contract data:', data);
-      }
-    } catch (error) {
-      console.error('Error adding bill:', error);
-    }
-  };
+  return (  
+    <div className="container mx-auto p-5">  
+      <h1 className="text-2xl text-center font-bold mb-4">ADD BILL</h1>  
+      <div className="m-5">  
+        <input  
+          type="text"  
+          className="border border-purple-500 rounded-md px-4 py-2 w-full mb-4"  
+          placeholder="Address"  
+          onChange={(event) => {  
+            setFormData((prev) => ({ ...prev, address: event.target.value }));  
+          }}  
+        />  
 
-  return (
-    <div className="container mx-auto p-5">
-      <h1 className="text-2xl text-center font-bold mb-4">ADD BILL</h1>
-      <div className="m-5">
-        <input
-          type="text"
-          className="border border-purple-500 rounded-md px-4 py-2 w-full mb-4"
-          placeholder="Address"
-          onChange={(event) => {
-            setFormData((prev) => ({ ...prev, address: event.target.value }));
-          }}
-        />
+        <input  
+          type="text"  
+          className="border border-purple-500 rounded-md px-4 py-2 w-full mb-4"  
+          placeholder="Amount"  
+          onChange={(event) => {  
+            setFormData((prev) => ({ ...prev, amount: event.target.value }));  
+          }}  
+        />  
 
-        <input
-          type="text"
-          className="border border-purple-500 rounded-md px-4 py-2 w-full mb-4"
-          placeholder="Amount"
-          onChange={(event) => {
-            setFormData((prev) => ({ ...prev, amount: event.target.value }));
-          }}
-        />
+        <input  
+          type="text"  
+          className="border border-purple-500 rounded-md px-4 py-2 w-full mb-4"  
+          placeholder="LockDuration"  
+          onChange={(event) => {  
+            setFormData((prev) => ({ ...prev, lockDuration: event.target.value }));  
+          }}  
+        />  
+      </div>  
 
-        <input
-          type="text"
-          className="border border-purple-500 rounded-md px-4 py-2 w-full mb-4"
-          placeholder="LockDuration"
-          onChange={(event) => {
-            setFormData((prev) => ({ ...prev, lockDuration: event.target.value }));
-          }}
-        />
-      </div>
-
-      <button
-        className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-md transition duration-300 focus:outline-none focus:ring focus:border-blue-700"
-        onClick={handleAddBill}
-      >
-        Confirm Transaction
-      </button>
-    </div>
-  );
-}
+      <button  
+        className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-md transition duration-300 focus:outline-none focus:ring focus:border-blue-700"  
+        onClick={handleAddBill}  
+      >  
+        Confirm Transaction  
+      </button>  
+    </div>  
+  );  
+}  
 
 export default AddBill;
